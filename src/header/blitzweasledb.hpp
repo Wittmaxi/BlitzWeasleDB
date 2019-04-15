@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <functional>
 
 namespace BWDB {
     class Column_base {};
@@ -18,7 +19,12 @@ namespace BWDB {
     template<Column... columns>
     class Row {
     public:
-        std::vector<Column_base*> input = {(*columns)...};    
+        std::vector<std::reference_wrapper<Column_base>> input = {columns...};
+        template<class A>
+        void changeValue (int rowid, A new_value);
+        void changeValue (std::string column_name);
+        std::string getValue (int rowid);
+        std::string getValue (std::string column_name);
     };
 
     template<Column... Entries>
