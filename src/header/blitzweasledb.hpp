@@ -6,20 +6,22 @@
 #include <functional>
 
 namespace BWDB {
-    class Column_base {};
+    class ColumnBase {};
 
     template <class A = std::string, A COL_NAME = "nothing", class ENTRY_TYPE = std::string> 
-    class Column : Column_base {
+    class Column : ColumnBase {
     public: 
         std::map <ENTRY_TYPE, int> elem_to_rowid;
         A col_name = COL_NAME;
     };
 
+    class EntryBase {};
 
     template<Column... columns>
     class Row {
     public:
-        std::vector<std::reference_wrapper<Column_base>> input = {columns...};
+        std::vector<std::reference_wrapper<ColumnBase>> input = {columns...};
+        int rowid;
         template<class A>
         void changeValue (int rowid, A new_value);
         void changeValue (std::string column_name);
@@ -27,9 +29,11 @@ namespace BWDB {
         std::string getValue (std::string column_name);
     };
 
-    template<Column... Entries>
+    template<Column... columns>
     class Database {
-
+        std::vector<Row<columns...>> rows;
+        template<class Entry...>
+        void addRow ();
     };
 }
 
